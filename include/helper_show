@@ -80,6 +80,7 @@ AUDIT_HELP="
     lynis audit system
     lynis audit system --cronjob
     lynis audit system --profile developer.prf
+    lynis audit system --profile dengbao.prf
     lynis audit system --quick
 
 

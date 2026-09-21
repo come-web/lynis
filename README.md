@@ -23,7 +23,7 @@ We believe software should be **simple**, **updated on a regular basis**, and **
 
 The main goals of Lynis include:
 - Automated security auditing
-- Compliance testing (e.g. ISO27001, PCI-DSS, HIPAA)
+- Compliance testing (e.g. ISO27001, PCI-DSS, HIPAA, MLPS 2.0 / 等保)
 - Vulnerability detection
 
 The software (also) assists with:

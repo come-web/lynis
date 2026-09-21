@@ -253,6 +253,13 @@
             #echo "  - Integrity monitoring   [${IDSIPS}${NORMAL}]"
             echo "  - Intrusion software     [${IDSIPS}${NORMAL}]"
             echo "  - Malware scanner        [${MALWARE}${NORMAL}]"
+            if [ ${COMPLIANCE_ENABLE_MLPS} -eq 1 ]; then
+                echo ""
+                echo "  ${SECTION}MLPS 2.0 / Dengbao${NORMAL}:"
+                echo "  Lynis only produces technical evidence for Linux/UNIX hosts."
+                echo "  Official self-check zip must be created with the 2026 v10.2 Windows tool."
+                echo "  See extras/dengbao/README.md"
+            fi
 
             echo ""
             echo "  ${SECTION}Files${NORMAL}:"
