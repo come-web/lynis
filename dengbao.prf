@@ -1,0 +1,41 @@
+#################################################################################
+#
+# Lynis - MLPS 2.0 / 等保 2.0 technical self-check profile
+#
+# Usage:
+#   ./lynis audit system --profile dengbao.prf --quick
+#
+# This profile maps Linux/UNIX audit results to GB/T 22239-2019 technical
+# requirements. It does NOT replace the official 自查工具 (v10.2) issued by
+# the public security bureau. See extras/dengbao/README.md.
+#
+#################################################################################
+
+# Profile title
+profile-name=MLPS 2.0 technical self-check
+
+# Chinese screen strings when available
+language=cn
+
+# Do not pause between tests
+quick=yes
+pause-between-tests=0
+
+# Full depth for self-check evidence
+test-scan-mode=full
+
+# Typical 等保 hosts are servers
+machine-role=server
+
+# Many 等保 networks cannot reach the public update check
+skip-upgrade-test=yes
+
+# Keep a usable report for the technical memo
+show-report-solution=yes
+error-on-warnings=no
+
+# Enable the 等保 mapping plugin (in addition to plugins from default.prf)
+plugin=dengbao
+
+# Report MLPS 2.0 (GB/T 22239-2019) alongside other enabled standards
+compliance-standards=mlps

@@ -1,0 +1,200 @@
+#!/bin/sh
+
+#########################################################################
+#
+#    * DO NOT REMOVE *
+#-----------------------------------------------------
+# PLUGIN_AUTHOR=come-web
+# PLUGIN_CATEGORY=compliance
+# PLUGIN_DATE=2026-09-21
+# PLUGIN_DESC=MLPS 2.0 / GB/T 22239-2019 technical self-check (phase 2)
+# PLUGIN_NAME=dengbao
+# PLUGIN_PACKAGE=community
+# PLUGIN_REQUIRED_TESTS=
+# PLUGIN_VERSION=1.0.0
+#-----------------------------------------------------
+#
+#########################################################################
+#
+# Map collected Lynis facts to GB/T 22239-2019 technical requirements.
+# Status:
+#   OK     - control has supporting evidence on this host
+#   GAP    - missing or weak, should go into 整改
+#   MANUAL - Lynis cannot conclude; fill in the official 自查工具 by hand
+#
+#########################################################################
+#
+    DENGBAO_OK=0
+    DENGBAO_GAP=0
+    DENGBAO_MANUAL=0
+    COMPLIANCE_ENABLE_MLPS=${COMPLIANCE_ENABLE_MLPS:-0}
+    COMPLIANCE_TESTS_PERFORMED=1
+
+    DengbaoCountField() {
+        DENGBAO_COUNT=0
+        if [ -n "${REPORTFILE}" ] && [ -f "${REPORTFILE}" ]; then
+            DENGBAO_COUNT=$(${GREPBINARY} -c "^${1}\[\]=${2}" "${REPORTFILE}" 2>/dev/null)
+        fi
+        if [ -z "${DENGBAO_COUNT}" ]; then DENGBAO_COUNT=0; fi
+    }
+
+    DengbaoShowControl() {
+        # $1 control id  $2 title  $3 OK|GAP|MANUAL  $4 evidence
+        DENGBAO_ID="$1"
+        DENGBAO_TITLE="$2"
+        DENGBAO_STATUS="$3"
+        DENGBAO_EVIDENCE="$4"
+        Report "dengbao_control[]=${DENGBAO_ID}|${DENGBAO_TITLE}|${DENGBAO_STATUS}|${DENGBAO_EVIDENCE}|"
+        LogText "MLPS control ${DENGBAO_ID} ${DENGBAO_TITLE}: ${DENGBAO_STATUS} (${DENGBAO_EVIDENCE})"
+        case ${DENGBAO_STATUS} in
+            OK)
+                DENGBAO_OK=$((DENGBAO_OK + 1))
+                Display --indent 4 --text "- ${DENGBAO_ID} ${DENGBAO_TITLE}" --result "${STATUS_OK}" --color GREEN
+            ;;
+            GAP)
+                DENGBAO_GAP=$((DENGBAO_GAP + 1))
+                COMPLIANCE_FINDINGS_FOUND=1
+                Display --indent 4 --text "- ${DENGBAO_ID} ${DENGBAO_TITLE}" --result "${STATUS_WARNING}" --color RED
+                ShowComplianceFinding --standard mlps --version "2019" --section "${DENGBAO_ID}" --section-title "${DENGBAO_TITLE}" --reason "${DENGBAO_EVIDENCE}" --actual "gap" --expected "implemented"
+                ReportSuggestion "MLPS-0010" "Remediate MLPS control ${DENGBAO_ID} ${DENGBAO_TITLE}" "${DENGBAO_EVIDENCE}" "text:See extras/dengbao/control-map.md"
+            ;;
+            *)
+                DENGBAO_MANUAL=$((DENGBAO_MANUAL + 1))
+                Display --indent 4 --text "- ${DENGBAO_ID} ${DENGBAO_TITLE}" --result "${STATUS_CHECK_NEEDED}" --color YELLOW
+                ReportManual "MLPS-${DENGBAO_ID}:${DENGBAO_TITLE}:${DENGBAO_EVIDENCE}"
+            ;;
+        esac
+        Display --indent 6 --text "${DENGBAO_EVIDENCE}"
+    }
+#
+#################################################################################
+#
+    InsertSection "MLPS 2.0 technical controls"
+
+    Display --indent 2 --text "GB/T 22239-2019 host mapping (not the official zip)"
+    Display --indent 2 --text "Use 分局 v10.2 Windows tool for the self-check zip"
+    Display --text " "
+#
+#################################################################################
+#
+    # Test        : MLPS-0010
+    # Description : Map Lynis results to MLPS 2.0 technical requirements
+    Register --test-no MLPS-0010 --weight L --network NO --category security --description "Map findings to GB/T 22239-2019 technical controls"
+    if [ ${SKIPTEST} -eq 0 ]; then
+        FIREWALL_ACTIVE=${FIREWALL_ACTIVE:-0}
+        FIREWALL_EMPTY_RULESET=${FIREWALL_EMPTY_RULESET:-0}
+        MALWARE_SCANNER_INSTALLED=${MALWARE_SCANNER_INSTALLED:-0}
+        IDS_IPS_TOOL_FOUND=${IDS_IPS_TOOL_FOUND:-0}
+        AUDIT_DAEMON_RUNNING=${AUDIT_DAEMON_RUNNING:-0}
+        FILE_INT_TOOL_FOUND=${FILE_INT_TOOL_FOUND:-0}
+        NTP_DAEMON_RUNNING=${NTP_DAEMON_RUNNING:-0}
+        SSH_DAEMON_RUNNING=${SSH_DAEMON_RUNNING:-0}
+
+        DengbaoCountField "warning" "AUTH-"
+        DENGBAO_AUTH_WARN=${DENGBAO_COUNT}
+        DengbaoCountField "warning" "SSH-"
+        DENGBAO_SSH_WARN=${DENGBAO_COUNT}
+        DengbaoCountField "warning" "CRYP-"
+        DENGBAO_CRYP_WARN=${DENGBAO_COUNT}
+        DengbaoCountField "warning" "LOG-"
+        DENGBAO_LOG_WARN=${DENGBAO_COUNT}
+        DengbaoCountField "warning" "FIRE-"
+        DENGBAO_FIRE_WARN=${DENGBAO_COUNT}
+
+        Display --indent 2 --text "Communication network (8.1.2)"
+        if [ ${DENGBAO_CRYP_WARN} -gt 0 ]; then
+            DengbaoShowControl "8.1.2.b" "Communication protection" "GAP" "Crypto warnings=${DENGBAO_CRYP_WARN}"
+        else
+            DengbaoShowControl "8.1.2.b" "Communication protection" "OK" "No CRYP- warnings; still confirm TLS and integrity protection"
+        fi
+        DengbaoShowControl "8.1.2.a" "Network architecture" "MANUAL" "Confirm zoning, dedicated management path, and no single-point core on drawings"
+        DengbaoShowControl "8.1.2.c" "Trusted verification" "MANUAL" "Not testable by Lynis; fill in 自查工具 by hand"
+
+        Display --indent 2 --text "Network boundary (8.1.3)"
+        if [ ${FIREWALL_ACTIVE} -eq 1 ] && [ ${FIREWALL_EMPTY_RULESET} -eq 0 ] && [ ${DENGBAO_FIRE_WARN} -eq 0 ]; then
+            DengbaoShowControl "8.1.3.a" "Boundary protection" "OK" "Host firewall active with a non-empty ruleset"
+        elif [ ${FIREWALL_ACTIVE} -eq 1 ]; then
+            DengbaoShowControl "8.1.3.a" "Boundary protection" "GAP" "Firewall present but empty ruleset or FIRE- warnings=${DENGBAO_FIRE_WARN}"
+        else
+            DengbaoShowControl "8.1.3.a" "Boundary protection" "GAP" "No active host firewall"
+        fi
+        if [ ${DENGBAO_SSH_WARN} -gt 0 ]; then
+            DengbaoShowControl "8.1.3.b" "Access control" "GAP" "SSH warnings=${DENGBAO_SSH_WARN}"
+        else
+            DengbaoShowControl "8.1.3.b" "Access control" "OK" "No SSH- warnings; confirm allow-lists at the network edge"
+        fi
+        if [ ${IDS_IPS_TOOL_FOUND} -eq 1 ]; then
+            DengbaoShowControl "8.1.3.c" "Intrusion prevention" "OK" "IDS/IPS tooling detected"
+        else
+            DengbaoShowControl "8.1.3.c" "Intrusion prevention" "GAP" "No IDS/IPS tooling detected"
+        fi
+        if [ ${MALWARE_SCANNER_INSTALLED} -eq 1 ]; then
+            DengbaoShowControl "8.1.3.d" "Malware prevention" "OK" "Malware scanner installed"
+        else
+            DengbaoShowControl "8.1.3.d" "Malware prevention" "GAP" "No malware scanner installed"
+        fi
+        if [ ${AUDIT_DAEMON_RUNNING} -eq 1 ] && [ ${DENGBAO_LOG_WARN} -eq 0 ]; then
+            DengbaoShowControl "8.1.3.e" "Security audit" "OK" "Audit daemon running; no LOG- warnings"
+        elif [ ${AUDIT_DAEMON_RUNNING} -eq 1 ]; then
+            DengbaoShowControl "8.1.3.e" "Security audit" "GAP" "Audit daemon running; LOG- warnings=${DENGBAO_LOG_WARN}"
+        else
+            DengbaoShowControl "8.1.3.e" "Security audit" "GAP" "Audit daemon not running"
+        fi
+
+        Display --indent 2 --text "Computing environment (8.1.4)"
+        if [ ${DENGBAO_AUTH_WARN} -gt 0 ]; then
+            DengbaoShowControl "8.1.4.a" "Identity authentication" "GAP" "AUTH- warnings=${DENGBAO_AUTH_WARN}"
+        else
+            DengbaoShowControl "8.1.4.a" "Identity authentication" "MANUAL" "No AUTH- warnings; confirm lockout, uniqueness, and MFA for level 3"
+        fi
+        DengbaoShowControl "8.1.4.b" "Access control" "MANUAL" "Confirm least privilege, default-deny, and sensitive-mark handling"
+        if [ ${AUDIT_DAEMON_RUNNING} -eq 1 ]; then
+            DengbaoShowControl "8.1.4.c" "Security audit" "OK" "Host audit daemon running"
+        else
+            DengbaoShowControl "8.1.4.c" "Security audit" "GAP" "Enable auditd (or equivalent) and retain logs"
+        fi
+        if [ ${IDS_IPS_TOOL_FOUND} -eq 1 ]; then
+            DengbaoShowControl "8.1.4.d" "Intrusion prevention" "OK" "Host intrusion tooling detected"
+        else
+            DengbaoShowControl "8.1.4.d" "Intrusion prevention" "GAP" "No host intrusion detection/prevention tooling"
+        fi
+        if [ ${MALWARE_SCANNER_INSTALLED} -eq 1 ]; then
+            DengbaoShowControl "8.1.4.e" "Malware prevention" "OK" "Malware scanner installed"
+        else
+            DengbaoShowControl "8.1.4.e" "Malware prevention" "GAP" "Install and update a malware scanner"
+        fi
+        DengbaoShowControl "8.1.4.f" "Trusted verification" "MANUAL" "Boot/runtime trusted verification is not tested by Lynis"
+        if [ ${FILE_INT_TOOL_FOUND} -eq 1 ]; then
+            DengbaoShowControl "8.1.4.g" "Data integrity" "OK" "File integrity tool detected"
+        else
+            DengbaoShowControl "8.1.4.g" "Data integrity" "GAP" "No file integrity monitoring tool"
+        fi
+        DengbaoShowControl "8.1.4.h" "Data confidentiality" "MANUAL" "Confirm encryption at rest and cryptographic module use"
+        DengbaoShowControl "8.1.4.i" "Backup and recovery" "MANUAL" "Confirm backup frequency, offsite copies, and restore tests"
+        DengbaoShowControl "8.1.4.j" "Residual information protection" "MANUAL" "Confirm disk wipe and memory reuse controls"
+        DengbaoShowControl "8.1.4.k" "Personal information protection" "MANUAL" "Confirm collection minimization and user consent if PI is processed"
+
+        Display --indent 2 --text "Management center (8.1.5) and operations"
+        DengbaoShowControl "8.1.5" "Security management center" "MANUAL" "Confirm centralized admin, audit, and sensor platform items in the official tool"
+        if [ ${NTP_DAEMON_RUNNING} -eq 1 ]; then
+            DengbaoShowControl "8.1.4.c-time" "Clock synchronization" "OK" "NTP/chrony/timesyncd running"
+        else
+            DengbaoShowControl "8.1.4.c-time" "Clock synchronization" "GAP" "No time synchronization daemon"
+        fi
+
+        Report "dengbao_ok=${DENGBAO_OK}"
+        Report "dengbao_gap=${DENGBAO_GAP}"
+        Report "dengbao_manual=${DENGBAO_MANUAL}"
+        Display --text " "
+        Display --indent 2 --text "- MLPS controls OK" --result "${DENGBAO_OK}" --color GREEN
+        Display --indent 2 --text "- MLPS controls GAP" --result "${DENGBAO_GAP}" --color RED
+        Display --indent 2 --text "- MLPS controls MANUAL" --result "${DENGBAO_MANUAL}" --color YELLOW
+        Display --indent 2 --text "- Next: extras/dengbao/export-memo.sh and official v10.2 zip"
+        LogText "Result: MLPS mapping complete (ok=${DENGBAO_OK} gap=${DENGBAO_GAP} manual=${DENGBAO_MANUAL})"
+    fi
+#
+#################################################################################
+#
+# End of plugin dengbao phase 2
+#
+#################################################################################

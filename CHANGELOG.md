@@ -1,5 +1,15 @@
 # Lynis Changelog
 
+## Lynis 3.1.8 (unreleased)
+
+### Added
+- MLPS 2.0 / GB/T 22239-2019 (等保) technical self-check profile (`dengbao.prf`)
+- `dengbao` plugin mapping host findings to 等保 technical controls
+- `mlps` / `dengbao` compliance-standards option
+- Operational guide and memo exporter under `extras/dengbao/`
+
+---------------------------------------------------------------------------------
+
 ## Lynis 3.1.7 (2026-06-25)
 
 ### Changed

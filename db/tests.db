@@ -446,4 +446,6 @@ TOOL-5190:test:security:tooling::Check presence of available IDS/IPS tooling:
 USB-1000:test:security:storage:Linux:Check if USB storage is disabled:
 USB-2000:test:security:storage:Linux:Check USB authorizations:
 USB-3000:test:security:storage:Linux:Check for presence of USBGuard:
+MLPS-0001:test:security:compliance:Linux:Enable MLPS 2.0 / GB/T 22239 reporting:
+MLPS-0010:test:security:compliance:Linux:Map findings to GB/T 22239-2019 technical controls:
 # EOF

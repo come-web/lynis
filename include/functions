@@ -3373,6 +3373,10 @@
                 if [ ${COMPLIANCE_ENABLE_ISO27001} -eq 1 ]; then SHOW=1; fi
                 STANDARD_FRIENDLY_NAME="ISO27001"
             ;;
+            mlps | dengbao)
+                if [ ${COMPLIANCE_ENABLE_MLPS} -eq 1 ]; then SHOW=1; fi
+                STANDARD_FRIENDLY_NAME="MLPS 2.0"
+            ;;
             pci-dss)
                 if [ ${COMPLIANCE_ENABLE_PCI_DSS} -eq 1 ]; then SHOW=1; fi
                 STANDARD_FRIENDLY_NAME="PCI DSS"
