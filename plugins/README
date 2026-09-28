@@ -13,11 +13,12 @@
 
   Notes:
 
-    - File permissions of a plugin should be 600, 640 or the least
-      restrictive 400.
+    - File permissions of a plugin should be 644, 640, 600 or 400.
     - Each plugin should be enabled in the profile, before it will be
       activated.
     - Custom plugins should use a test ID's with a "CUS-" prefix.
+    - The `dengbao` plugin maps host findings to GB/T 22239-2019 (等保 2.0).
+      Enable it with `plugin=dengbao` or `--profile dengbao.prf`.
 
     A generic example can be found in the custom_plugin.template file,
     which includes several code snippets to assist in creating customer

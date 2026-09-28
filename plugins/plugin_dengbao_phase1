@@ -1,0 +1,41 @@
+#!/bin/sh
+
+#########################################################################
+#
+#    * DO NOT REMOVE *
+#-----------------------------------------------------
+# PLUGIN_AUTHOR=come-web
+# PLUGIN_CATEGORY=compliance
+# PLUGIN_DATE=2026-09-21
+# PLUGIN_DESC=MLPS 2.0 / GB/T 22239-2019 technical self-check (phase 1)
+# PLUGIN_NAME=dengbao
+# PLUGIN_PACKAGE=community
+# PLUGIN_REQUIRED_TESTS=
+# PLUGIN_VERSION=1.0.0
+#-----------------------------------------------------
+#
+#########################################################################
+#
+    LogText "Insight: dengbao plugin does not generate the official self-check zip. Use the 2026 v10.2 Windows tool for that."
+    LogText "Insight: Lynis results support 整改 and the technical annex of the self-check summary."
+#
+#################################################################################
+#
+    # Test        : MLPS-0001
+    # Description : Enable MLPS 2.0 reporting for this scan
+    Register --test-no MLPS-0001 --weight L --network NO --category security --description "Enable MLPS 2.0 / GB/T 22239 reporting" --progress
+    if [ ${SKIPTEST} -eq 0 ]; then
+        COMPLIANCE_ENABLE_MLPS=1
+        COMPLIANCE_TESTS_PERFORMED=1
+        Report "dengbao_plugin=1"
+        Report "dengbao_standard=GB/T 22239-2019"
+        Report "dengbao_official_tool=v10.2"
+        Display --indent 4 --text "- MLPS 2.0 reporting (v10.2 zip is separate)" --result "${STATUS_ENABLED}" --color GREEN
+        LogText "Result: MLPS 2.0 (等保) compliance reporting is enabled"
+    fi
+#
+#################################################################################
+#
+# End of plugin dengbao phase 1
+#
+#################################################################################
