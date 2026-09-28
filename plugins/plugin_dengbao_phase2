@@ -101,85 +101,85 @@
         DengbaoCountField "warning" "FIRE-"
         DENGBAO_FIRE_WARN=${DENGBAO_COUNT}
 
-        Display --indent 2 --text "Communication network (8.1.2)"
+        Display --indent 2 --text "安全通信网络 (8.1.2)"
         if [ ${DENGBAO_CRYP_WARN} -gt 0 ]; then
-            DengbaoShowControl "8.1.2.b" "Communication protection" "GAP" "Crypto warnings=${DENGBAO_CRYP_WARN}"
+            DengbaoShowControl "8.1.2.b" "通信传输" "GAP" "Crypto warnings=${DENGBAO_CRYP_WARN}"
         else
-            DengbaoShowControl "8.1.2.b" "Communication protection" "OK" "No CRYP- warnings; still confirm TLS and integrity protection"
+            DengbaoShowControl "8.1.2.b" "通信传输" "OK" "No CRYP- warnings; still confirm TLS and integrity protection"
         fi
-        DengbaoShowControl "8.1.2.a" "Network architecture" "MANUAL" "Confirm zoning, dedicated management path, and no single-point core on drawings"
-        DengbaoShowControl "8.1.2.c" "Trusted verification" "MANUAL" "Not testable by Lynis; fill in 自查工具 by hand"
+        DengbaoShowControl "8.1.2.a" "网络架构" "MANUAL" "Confirm zoning, dedicated management path, and no single-point core on drawings"
+        DengbaoShowControl "8.1.2.c" "可信验证" "MANUAL" "Not testable by Lynis; fill in 自查工具 by hand"
 
-        Display --indent 2 --text "Network boundary (8.1.3)"
+        Display --indent 2 --text "安全区域边界 (8.1.3)"
         if [ ${FIREWALL_ACTIVE} -eq 1 ] && [ ${FIREWALL_EMPTY_RULESET} -eq 0 ] && [ ${DENGBAO_FIRE_WARN} -eq 0 ]; then
-            DengbaoShowControl "8.1.3.a" "Boundary protection" "OK" "Host firewall active with a non-empty ruleset"
+            DengbaoShowControl "8.1.3.a" "边界防护" "OK" "Host firewall active with a non-empty ruleset"
         elif [ ${FIREWALL_ACTIVE} -eq 1 ]; then
-            DengbaoShowControl "8.1.3.a" "Boundary protection" "GAP" "Firewall present but empty ruleset or FIRE- warnings=${DENGBAO_FIRE_WARN}"
+            DengbaoShowControl "8.1.3.a" "边界防护" "GAP" "Firewall present but empty ruleset or FIRE- warnings=${DENGBAO_FIRE_WARN}"
         else
-            DengbaoShowControl "8.1.3.a" "Boundary protection" "GAP" "No active host firewall"
+            DengbaoShowControl "8.1.3.a" "边界防护" "GAP" "No active host firewall"
         fi
         if [ ${DENGBAO_SSH_WARN} -gt 0 ]; then
-            DengbaoShowControl "8.1.3.b" "Access control" "GAP" "SSH warnings=${DENGBAO_SSH_WARN}"
+            DengbaoShowControl "8.1.3.b" "访问控制" "GAP" "SSH warnings=${DENGBAO_SSH_WARN}"
         else
-            DengbaoShowControl "8.1.3.b" "Access control" "OK" "No SSH- warnings; confirm allow-lists at the network edge"
+            DengbaoShowControl "8.1.3.b" "访问控制" "OK" "No SSH- warnings; confirm allow-lists at the network edge"
         fi
         if [ ${IDS_IPS_TOOL_FOUND} -eq 1 ]; then
-            DengbaoShowControl "8.1.3.c" "Intrusion prevention" "OK" "IDS/IPS tooling detected"
+            DengbaoShowControl "8.1.3.c" "入侵防范" "OK" "IDS/IPS tooling detected"
         else
-            DengbaoShowControl "8.1.3.c" "Intrusion prevention" "GAP" "No IDS/IPS tooling detected"
+            DengbaoShowControl "8.1.3.c" "入侵防范" "GAP" "No IDS/IPS tooling detected"
         fi
         if [ ${MALWARE_SCANNER_INSTALLED} -eq 1 ]; then
-            DengbaoShowControl "8.1.3.d" "Malware prevention" "OK" "Malware scanner installed"
+            DengbaoShowControl "8.1.3.d" "恶意代码防范" "OK" "Malware scanner installed"
         else
-            DengbaoShowControl "8.1.3.d" "Malware prevention" "GAP" "No malware scanner installed"
+            DengbaoShowControl "8.1.3.d" "恶意代码防范" "GAP" "No malware scanner installed"
         fi
         if [ ${AUDIT_DAEMON_RUNNING} -eq 1 ] && [ ${DENGBAO_LOG_WARN} -eq 0 ]; then
-            DengbaoShowControl "8.1.3.e" "Security audit" "OK" "Audit daemon running; no LOG- warnings"
+            DengbaoShowControl "8.1.3.e" "安全审计" "OK" "Audit daemon running; no LOG- warnings"
         elif [ ${AUDIT_DAEMON_RUNNING} -eq 1 ]; then
-            DengbaoShowControl "8.1.3.e" "Security audit" "GAP" "Audit daemon running; LOG- warnings=${DENGBAO_LOG_WARN}"
+            DengbaoShowControl "8.1.3.e" "安全审计" "GAP" "Audit daemon running; LOG- warnings=${DENGBAO_LOG_WARN}"
         else
-            DengbaoShowControl "8.1.3.e" "Security audit" "GAP" "Audit daemon not running"
+            DengbaoShowControl "8.1.3.e" "安全审计" "GAP" "Audit daemon not running"
         fi
 
-        Display --indent 2 --text "Computing environment (8.1.4)"
+        Display --indent 2 --text "安全计算环境 (8.1.4)"
         if [ ${DENGBAO_AUTH_WARN} -gt 0 ]; then
-            DengbaoShowControl "8.1.4.a" "Identity authentication" "GAP" "AUTH- warnings=${DENGBAO_AUTH_WARN}"
+            DengbaoShowControl "8.1.4.a" "身份鉴别" "GAP" "AUTH- warnings=${DENGBAO_AUTH_WARN}"
         else
-            DengbaoShowControl "8.1.4.a" "Identity authentication" "MANUAL" "No AUTH- warnings; confirm lockout, uniqueness, and MFA for level 3"
+            DengbaoShowControl "8.1.4.a" "身份鉴别" "MANUAL" "No AUTH- warnings; confirm lockout, uniqueness, and MFA for level 3"
         fi
-        DengbaoShowControl "8.1.4.b" "Access control" "MANUAL" "Confirm least privilege, default-deny, and sensitive-mark handling"
+        DengbaoShowControl "8.1.4.b" "访问控制" "MANUAL" "Confirm least privilege, default-deny, and sensitive-mark handling"
         if [ ${AUDIT_DAEMON_RUNNING} -eq 1 ]; then
-            DengbaoShowControl "8.1.4.c" "Security audit" "OK" "Host audit daemon running"
+            DengbaoShowControl "8.1.4.c" "安全审计" "OK" "Host audit daemon running"
         else
-            DengbaoShowControl "8.1.4.c" "Security audit" "GAP" "Enable auditd (or equivalent) and retain logs"
+            DengbaoShowControl "8.1.4.c" "安全审计" "GAP" "Enable auditd (or equivalent) and retain logs"
         fi
         if [ ${IDS_IPS_TOOL_FOUND} -eq 1 ]; then
-            DengbaoShowControl "8.1.4.d" "Intrusion prevention" "OK" "Host intrusion tooling detected"
+            DengbaoShowControl "8.1.4.d" "入侵防范" "OK" "Host intrusion tooling detected"
         else
-            DengbaoShowControl "8.1.4.d" "Intrusion prevention" "GAP" "No host intrusion detection/prevention tooling"
+            DengbaoShowControl "8.1.4.d" "入侵防范" "GAP" "No host intrusion detection/prevention tooling"
         fi
         if [ ${MALWARE_SCANNER_INSTALLED} -eq 1 ]; then
-            DengbaoShowControl "8.1.4.e" "Malware prevention" "OK" "Malware scanner installed"
+            DengbaoShowControl "8.1.4.e" "恶意代码防范" "OK" "Malware scanner installed"
         else
-            DengbaoShowControl "8.1.4.e" "Malware prevention" "GAP" "Install and update a malware scanner"
+            DengbaoShowControl "8.1.4.e" "恶意代码防范" "GAP" "Install and update a malware scanner"
         fi
-        DengbaoShowControl "8.1.4.f" "Trusted verification" "MANUAL" "Boot/runtime trusted verification is not tested by Lynis"
+        DengbaoShowControl "8.1.4.f" "可信验证" "MANUAL" "Boot/runtime trusted verification is not tested by Lynis"
         if [ ${FILE_INT_TOOL_FOUND} -eq 1 ]; then
-            DengbaoShowControl "8.1.4.g" "Data integrity" "OK" "File integrity tool detected"
+            DengbaoShowControl "8.1.4.g" "数据完整性" "OK" "File integrity tool detected"
         else
-            DengbaoShowControl "8.1.4.g" "Data integrity" "GAP" "No file integrity monitoring tool"
+            DengbaoShowControl "8.1.4.g" "数据完整性" "GAP" "No file integrity monitoring tool"
         fi
-        DengbaoShowControl "8.1.4.h" "Data confidentiality" "MANUAL" "Confirm encryption at rest and cryptographic module use"
-        DengbaoShowControl "8.1.4.i" "Backup and recovery" "MANUAL" "Confirm backup frequency, offsite copies, and restore tests"
-        DengbaoShowControl "8.1.4.j" "Residual information protection" "MANUAL" "Confirm disk wipe and memory reuse controls"
-        DengbaoShowControl "8.1.4.k" "Personal information protection" "MANUAL" "Confirm collection minimization and user consent if PI is processed"
+        DengbaoShowControl "8.1.4.h" "数据保密性" "MANUAL" "Confirm encryption at rest and cryptographic module use"
+        DengbaoShowControl "8.1.4.i" "数据备份恢复" "MANUAL" "Confirm backup frequency, offsite copies, and restore tests"
+        DengbaoShowControl "8.1.4.j" "剩余信息保护" "MANUAL" "Confirm disk wipe and memory reuse controls"
+        DengbaoShowControl "8.1.4.k" "个人信息保护" "MANUAL" "Confirm collection minimization and user consent if PI is processed"
 
-        Display --indent 2 --text "Management center (8.1.5) and operations"
-        DengbaoShowControl "8.1.5" "Security management center" "MANUAL" "Confirm centralized admin, audit, and sensor platform items in the official tool"
+        Display --indent 2 --text "安全管理中心 (8.1.5) 与运维"
+        DengbaoShowControl "8.1.5" "安全管理中心" "MANUAL" "Confirm centralized admin, audit, and 态势感知 items in v10.2"
         if [ ${NTP_DAEMON_RUNNING} -eq 1 ]; then
-            DengbaoShowControl "8.1.4.c-time" "Clock synchronization" "OK" "NTP/chrony/timesyncd running"
+            DengbaoShowControl "8.1.4.c-time" "时钟同步" "OK" "NTP/chrony/timesyncd running"
         else
-            DengbaoShowControl "8.1.4.c-time" "Clock synchronization" "GAP" "No time synchronization daemon"
+            DengbaoShowControl "8.1.4.c-time" "时钟同步" "GAP" "No time synchronization daemon"
         fi
 
         Report "dengbao_ok=${DENGBAO_OK}"
@@ -190,6 +190,8 @@
         Display --indent 2 --text "- MLPS controls GAP" --result "${DENGBAO_GAP}" --color RED
         Display --indent 2 --text "- MLPS controls MANUAL" --result "${DENGBAO_MANUAL}" --color YELLOW
         Display --indent 2 --text "- Next: extras/dengbao/export-memo.sh and official v10.2 zip"
+        Display --indent 2 --text "- Official zip deadline: 2026-09-30  cysjm@gawa.bjchy.gov.cn"
+        Display --indent 2 --text "- Work list: sh extras/dengbao/print-work.sh"
         LogText "Result: MLPS mapping complete (ok=${DENGBAO_OK} gap=${DENGBAO_GAP} manual=${DENGBAO_MANUAL})"
     fi
 #

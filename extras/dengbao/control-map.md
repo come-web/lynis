@@ -8,27 +8,27 @@ drop controls that the standard marks as not required at that grade.
 
 | Control | Title | Lynis signals | Typical remediation |
 | --- | --- | --- | --- |
-| 8.1.2.a | Network architecture | MANUAL | Zoning drawings, dedicated OOB/management path |
-| 8.1.2.b | Communication protection | `CRYP-*`, SSH crypto | TLS 1.2+, disable weak ciphers, integrity protection |
-| 8.1.2.c | Trusted verification | MANUAL | Hardware/boot chain evidence |
-| 8.1.3.a | Boundary protection | `FIRE-*`, `firewall_active` | Host firewall + edge ACL, no empty policy |
-| 8.1.3.b | Access control | `SSH-*` | Allow-list, drop unused services |
-| 8.1.3.c | Intrusion prevention | `TOOL-51*`, `IDS_IPS_TOOL_FOUND` | IDS/IPS or WAF at the boundary |
-| 8.1.3.d | Malware prevention | `MALW-*` | Deploy and update AV/EDR |
-| 8.1.3.e | Security audit | `ACCT-*`, `LOG-*` | Audit on network devices; retain logs |
-| 8.1.4.a | Identity authentication | `AUTH-*` | Unique IDs, lockout, MFA for level 3 |
-| 8.1.4.b | Access control | `FILE-*`, `AUTH-925*` | Least privilege, default deny |
-| 8.1.4.c | Security audit | `ACCT-9628`, `audit_daemon_running` | auditd rules, protected log storage |
-| 8.1.4.c-time | Clock sync | `TIME-*`, `NTP_DAEMON_RUNNING` | NTP/chrony to a trusted source |
-| 8.1.4.d | Intrusion prevention | `TOOL-5102` Fail2ban, IDS | Host IDS / login guarding |
-| 8.1.4.e | Malware prevention | `MALW-*` | Scanner + signature updates |
-| 8.1.4.f | Trusted verification | MANUAL | Measured boot / trusted compute |
-| 8.1.4.g | Data integrity | `FINT-*`, `FILE_INT_TOOL_FOUND` | AIDE/Tripwire/OSSEC syscheck |
-| 8.1.4.h | Data confidentiality | `CRYP-*` | Encryption at rest, approved crypto |
-| 8.1.4.i | Backup and recovery | MANUAL | Backup job + restore drill evidence |
-| 8.1.4.j | Residual information | `HOME-*`, storage tests | Wipe, secure delete, memory reuse |
-| 8.1.4.k | Personal information | MANUAL | Minimization, consent, masking |
-| 8.1.5 | Management center | MANUAL | Fill 态势感知 / 综合业务平台 items in v10.2 |
+| 8.1.2.a | 网络架构 | MANUAL | Zoning drawings, dedicated OOB/management path |
+| 8.1.2.b | 通信传输 | `CRYP-*`, SSH crypto | TLS 1.2+, disable weak ciphers, integrity protection |
+| 8.1.2.c | 可信验证 | MANUAL | Hardware/boot chain evidence |
+| 8.1.3.a | 边界防护 | `FIRE-*`, `firewall_active` | Host firewall + edge ACL, no empty policy |
+| 8.1.3.b | 访问控制 | `SSH-*` | Allow-list, drop unused services |
+| 8.1.3.c | 入侵防范 | `TOOL-51*`, `IDS_IPS_TOOL_FOUND` | IDS/IPS or WAF at the boundary |
+| 8.1.3.d | 恶意代码防范 | `MALW-*` | Deploy and update AV/EDR |
+| 8.1.3.e | 安全审计 | `ACCT-*`, `LOG-*` | Audit on network devices; retain logs |
+| 8.1.4.a | 身份鉴别 | `AUTH-*` | Unique IDs, lockout, MFA for level 3 |
+| 8.1.4.b | 访问控制 | `FILE-*`, `AUTH-925*` | Least privilege, default deny |
+| 8.1.4.c | 安全审计 | `ACCT-9628`, `audit_daemon_running` | auditd rules, protected log storage |
+| 8.1.4.c-time | 时钟同步 | `TIME-*`, `NTP_DAEMON_RUNNING` | NTP/chrony to a trusted source |
+| 8.1.4.d | 入侵防范 | `TOOL-5102` Fail2ban, IDS | Host IDS / login guarding |
+| 8.1.4.e | 恶意代码防范 | `MALW-*` | Scanner + signature updates |
+| 8.1.4.f | 可信验证 | MANUAL | Measured boot / trusted compute |
+| 8.1.4.g | 数据完整性 | `FINT-*`, `FILE_INT_TOOL_FOUND` | AIDE/Tripwire/OSSEC syscheck |
+| 8.1.4.h | 数据保密性 | `CRYP-*` | Encryption at rest, approved crypto |
+| 8.1.4.i | 数据备份恢复 | MANUAL | Backup job + restore drill evidence |
+| 8.1.4.j | 剩余信息保护 | `HOME-*`, storage tests | Wipe, secure delete, memory reuse |
+| 8.1.4.k | 个人信息保护 | MANUAL | Minimization, consent, masking |
+| 8.1.5 | 安全管理中心 | MANUAL | Fill 态势感知 / 综合业务平台 items in v10.2 |
 
 Scan command:
 

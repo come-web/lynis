@@ -6,7 +6,7 @@
 - MLPS 2.0 / GB/T 22239-2019 (等保) technical self-check profile (`dengbao.prf`)
 - `dengbao` plugin mapping host findings to 等保 technical controls
 - `mlps` / `dengbao` compliance-standards option
-- Operational guide and memo exporter under `extras/dengbao/`
+- Operational guide, Chaoyang 2026 work plan, v10.2 filling sheet, and memo exporter under `extras/dengbao/`
 
 ---------------------------------------------------------------------------------
 

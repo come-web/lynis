@@ -62,6 +62,9 @@ manual_count=$(awk -F= '/^dengbao_manual=/{print $2; exit}' "${REPORT}")
             sub(/^dengbao_control\[\]=/, "", line)
             n=split(line, a, "|")
             id=a[1]; title=a[2]; status=a[3]; evidence=a[4]
+            if (status == "OK") status = "符合"
+            else if (status == "GAP") status = "差距"
+            else if (status == "MANUAL") status = "需确认"
             printf("| %s | %s | %s | %s |\n", id, title, status, evidence)
         }
     ' "${REPORT}"
