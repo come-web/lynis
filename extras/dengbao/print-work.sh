@@ -9,13 +9,14 @@ MAIL_DEADLINE=20260930
 OFFLINE_START=20261008
 
 days_until() {
-    # $1 = YYYYMMDD
-    if date -d "${1}" +%s >/dev/null 2>&1; then
-        target=$(date -d "${1}" +%s)
-        now=$(date +%s)
-    elif date -j -f "%Y%m%d" "${1}" +%s >/dev/null 2>&1; then
-        target=$(date -j -f "%Y%m%d" "${1}" +%s)
-        now=$(date +%s)
+    # Calendar days from local midnight today to YYYYMMDD.
+    ymd="$1"
+    if date -d "${ymd}" +%s >/dev/null 2>&1; then
+        target=$(date -d "${ymd}" +%s)
+        now=$(date -d "$(date +%Y-%m-%d)" +%s)
+    elif date -j -f "%Y%m%d" "${ymd}" +%s >/dev/null 2>&1; then
+        target=$(date -j -f "%Y%m%d" "${ymd}" +%s)
+        now=$(date -j -f "%Y%m%d" "$(date +%Y%m%d)" +%s)
     else
         echo "?"
         return
@@ -76,10 +77,16 @@ echo "  - 已用 v1.1 / v1.2 导出过的不用再填更新工具"
 echo ""
 
 REPORT=""
-if [ -f "${HOME}/lynis-report.dat" ]; then
+if [ -n "${1:-}" ] && [ -f "$1" ]; then
+    REPORT="$1"
+elif [ -n "${LYNIS_REPORT:-}" ] && [ -f "${LYNIS_REPORT}" ]; then
+    REPORT="${LYNIS_REPORT}"
+elif [ -f "${HOME}/lynis-report.dat" ]; then
     REPORT="${HOME}/lynis-report.dat"
 elif [ -f "/var/log/lynis-report.dat" ]; then
     REPORT="/var/log/lynis-report.dat"
+elif [ -f "/tmp/lynis-report.dat" ]; then
+    REPORT="/tmp/lynis-report.dat"
 fi
 
 if [ -n "${REPORT}" ]; then

@@ -49,7 +49,7 @@ manual_count=$(awk -F= '/^dengbao_manual=/{print $2; exit}' "${REPORT}")
     echo "- 系统：${os_val:-unknown}"
     echo "- 扫描结束：${end_time:-unknown}"
     echo "- 加固指数：${hardening:-unknown}"
-    echo "- 对照结果：OK ${ok_count:-0} / GAP ${gap_count:-0} / 需确认 ${manual_count:-0}"
+    echo "- 对照结果：符合 ${ok_count:-0} / 差距 ${gap_count:-0} / 需确认 ${manual_count:-0}"
     echo "- 报告文件：${REPORT}"
     echo ""
     echo "## 控制项对照（GB/T 22239-2019）"
